@@ -1,0 +1,106 @@
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@joinin.com",
+  "password": "password123"
+}
+
+###
+
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test Users",
+  "email": "testUser@example.com",
+  "password": "123456"
+}
+
+
+###
+
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User1",
+  "email": "testUser1@example.com",
+  "password": "123456"
+}
+
+###
+
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User2",
+  "email": "testUser2@example.com",
+  "password": "123456"
+}
+
+###
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "testUser@example.com",
+  "password": "123456"
+}
+
+###
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@joinin.com",
+  "password": "password123"
+}
+
+###
+POST http://localhost:5000/api/auth/verify-otp
+Content-Type: application/json
+
+{
+  "email": "testUser@example.com",
+  "otp": "114634"
+}
+
+
+###
+### 1. Send OTP for booking
+POST http://localhost:5000/api/booking/send-otp
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhODU4MWVlMTliZTY0NDc1ZDZlMjRlMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzg3MTQwNzUyLCJleHAiOjE3ODc3NDU1NTJ9.TNosy0f1TGcWlnhKwRvRw1MBXNr4hQbVCVCeb1zrC5A
+Content-Type: application/json
+
+{
+  "eventId": "6a65d46b7cf29b9bcd74de77"
+}
+
+### 2. Book an event (requires OTP)
+POST http://localhost:5000/api/booking
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhODU4MWVlMTliZTY0NDc1ZDZlMjRlMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzg3MTQwNzUyLCJleHAiOjE3ODc3NDU1NTJ9.TNosy0f1TGcWlnhKwRvRw1MBXNr4hQbVCVCeb1zrC5A
+Content-Type: application/json
+
+{
+  "eventId": "6a65d46b7cf29b9bcd74de77",
+  "otp": "806837"
+}
+
+### 3. Confirm booking (admin only)
+PUT http://localhost:5000/api/booking/6a859e945f78665a4e6e3023/confirm
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNjVkNDZiN2NmMjliOWJjZDc0ZGU2YiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4NzE0MTA2NywiZXhwIjoxNzg3NzQ1ODY3fQ.b2p1W5tg6_v7IDL-R7hwuLryTG3Uu71aAfc8OnA8fE0
+Content-Type: application/json
+
+{
+  "paymentStatus": "paid"
+}
+
+### 4. Get my bookings
+GET http://localhost:5000/api/booking/my
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhODU4MWVlMTliZTY0NDc1ZDZlMjRlMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzg3MTQwNzUyLCJleHAiOjE3ODc3NDU1NTJ9.TNosy0f1TGcWlnhKwRvRw1MBXNr4hQbVCVCeb1zrC5A
+
+### 5. Cancel a booking
+DELETE http://localhost:5000/api/booking/6a859e945f78665a4e6e3023
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhODU4MWVlMTliZTY0NDc1ZDZlMjRlMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzg3MTQwNzUyLCJleHAiOjE3ODc3NDU1NTJ9.TNosy0f1TGcWlnhKwRvRw1MBXNr4hQbVCVCeb1zrC5A
