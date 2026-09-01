@@ -16,9 +16,6 @@ app.get('/api/test', (req, res) => {
   res.json({ message: 'Backend is connected!' });
 });
 
-// app.listen(5000, () => {
-//   console.log('Backend running on http://localhost:5000');
-// }); 
 
 
 //Routes

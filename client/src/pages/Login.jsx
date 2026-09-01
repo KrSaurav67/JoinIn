@@ -20,7 +20,6 @@ const Login = () => {
         try {
             if (!showOTP) {
                 const data = await login(email, password);
-                // console.log(data);
                 if (data.role === 'admin') navigate('/admin');
                 else navigate('/dashboard');
             } else {

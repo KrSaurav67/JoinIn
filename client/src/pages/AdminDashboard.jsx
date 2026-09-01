@@ -63,7 +63,7 @@ const AdminDashboard = () => {
         setUpdateEventId(event._id);   // track which event is being edited
         const booked = event.totalSeats - event.availableSeats;
         setBookedSeats(booked);
-        console.log(booked);
+        
     
         
         setFormData({
@@ -83,7 +83,6 @@ const AdminDashboard = () => {
         e.preventDefault();
         try {
             if (updateEventId) {
-                console.log(formData.totalSeats);
                 const payload = {
                     ...formData,
                     date: new Date(formData.date).toISOString(), // ✅ convert back to ISO

@@ -9,7 +9,6 @@ const PaymentPage = () => {
     const[paystatus, setStatus] = useState(null);
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(false);
-    // console.log(id);
 
     useEffect(() => {
     const fetchEvent = async () => {

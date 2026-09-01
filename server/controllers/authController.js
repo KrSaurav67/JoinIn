@@ -22,11 +22,9 @@ exports.registerUser = async(req, res) => {
 
     try{
         const user = User.create({name, email, password: hashedPassword,role:'user',isVerified:false});
-        //await user.save();
-        //res.status(201).json({message: 'user registered successfully'});
-
+       
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        console.log(`OTP for ${email}: ${otp}`);
+        
         await OTP.create({email, otp, action:'account_verification'});
         await sendOTPEmail(email, otp, 'account_verification');
 
@@ -47,10 +45,8 @@ exports.loginUser = async (req, res) => {
     const user = await User.findOne({email});
     
     if((!user)){
-        console.log("user not found");
         return res.status(400).json({error: 'User not found'});
     }
-    console.log("user found");
     const isMatch = await bcrypt.compare(password, user.password);
     if(!isMatch){
         return res.status(400).json({error: 'Invalid eredentials'});
@@ -58,7 +54,6 @@ exports.loginUser = async (req, res) => {
 
     if(!user.isVerified && user.role=='user'){
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        console.log(`${otp}`);
         await OTP.deleteMany({email, action: 'account_verification'});
         await OTP.create({email, otp, action: 'account_verification'});
         await sendOTPEmail(email, otp, 'account_verification');
@@ -81,7 +76,6 @@ exports.loginUser = async (req, res) => {
 
 //verify OTP
 exports.verifyOtp = async (req, res)=>{
-     console.log("Request body:", req.body);
     const {email, otp} = req.body;
     const otpRecord = await OTP.findOne({email, otp, action:'account_verification'});
     if(!otpRecord){
