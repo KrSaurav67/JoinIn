@@ -32,7 +32,11 @@ const EventDetail = () => {
             try {
                 const { data } = await api.get(`/events/${id}`);
                 setEvent(data);
-                await checkBooking(id);
+                const token = localStorage.getItem('token');
+
+                if (token) {
+                    await checkBooking(id);
+                }
             } catch (err) {
                 setError('Failed to load event details.');
             } finally {
@@ -45,7 +49,7 @@ const EventDetail = () => {
     const checkBooking = async (eventId) => {
         try {
             const { data } = await api.get(`/booking/my`);
-            const booking = data.find(b=>b.eventId._id===id);
+            const booking = data.find(b=>b.eventId._id===eventId);
             if(booking){
                 setstatus(booking.status);
             }
@@ -53,8 +57,9 @@ const EventDetail = () => {
                 setstatus(null);
             }
         } catch (error) {
-            alert(error.response?.data?.error || "Error checking booking");
-        }
+        console.error("Error checking booking:", error);
+        setstatus(null);
+    }
     };
     // const handlePayment=async () => {
         
