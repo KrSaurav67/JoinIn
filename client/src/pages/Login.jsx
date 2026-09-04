@@ -27,13 +27,13 @@ const Login = () => {
                 if (data.role === 'admin') navigate('/admin');
                 else navigate('/dashboard');
             }
-        } catch (err) {
+        }catch (err) {
             const errorData = err.response?.data || {};
             if (errorData.needsVerification) {
                 setShowOTP(true);
                 setError('Account not verified. A new OTP has been sent to your email.');
             } else {
-                setError(err || "Login failed");
+                setError(errorData.error || err.message || 'Login failed');
             }
         } finally {
             setLoading(false);

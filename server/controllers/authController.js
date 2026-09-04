@@ -13,21 +13,20 @@ exports.registerUser = async(req, res) => {
     const {name, email, password} = req.body;
 
     let userExists = await User.findOne({email});
+    
     if(userExists){
         return res.status(400).json({error: 'User already exists'});
     }
-
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     try{
-        const user = User.create({name, email, password: hashedPassword,role:'user',isVerified:false});
+        const user = await User.create({name, email, password: hashedPassword,role:'user',isVerified:false});
        
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         
         await OTP.create({email, otp, action:'account_verification'});
         await sendOTPEmail(email, otp, 'account_verification');
-
         
         res.status(201).json({message: 'User registered successfully. Please check your email for OTP to verify your account.',
             email: user.email
@@ -37,41 +36,42 @@ exports.registerUser = async(req, res) => {
     }
 };
 
-//Login User
 exports.loginUser = async (req, res) => {
-    const {email, password} = req.body;
-    
+    try {
+        const {email, password} = req.body;
 
-    const user = await User.findOne({email});
-    
-    if((!user)){
-        return res.status(400).json({error: 'User not found'});
-    }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if(!isMatch){
-        return res.status(400).json({error: 'Invalid eredentials'});
-    }
+        const user = await User.findOne({email});
+        if (!user) {
+            return res.status(400).json({error: 'User not found'});
+        }
 
-    if(!user.isVerified && user.role=='user'){
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        await OTP.deleteMany({email, action: 'account_verification'});
-        await OTP.create({email, otp, action: 'account_verification'});
-        await sendOTPEmail(email, otp, 'account_verification');
-        return res.status(400).json({
-            error: 'Account not verified. A new OTP has been sent to your email.',
-            needsVerification: true
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({error: 'Invalid credentials'});
+        }
+
+        if (!user.isVerified && user.role === 'user') {
+            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+            await OTP.deleteMany({email, action: 'account_verification'});
+            await OTP.create({email, otp, action: 'account_verification'});
+            await sendOTPEmail(email, otp, 'account_verification');
+            return res.status(400).json({
+                error: 'Account not verified. A new OTP has been sent to your email.',
+                needsVerification: true
+            });
+        }
+
+        res.json({
+            message: 'Login successful',
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            token: generateToken(user._id, user.role)
         });
-        
-        
+    } catch (error) {
+        res.status(500).json({error: 'Something went wrong. Please try again.'});
     }
-    res.json({
-        message: 'Login successful',
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        token: generateToken(user._id, user.role)
-    });
 };
 
 //verify OTP

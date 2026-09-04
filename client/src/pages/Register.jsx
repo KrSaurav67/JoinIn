@@ -23,12 +23,14 @@ const Register = () => {
                 await register(name, email, password);
                 setShowOTP(true);
                 setError('');
+                
             } else {
                 await verifyOTP(email, otp);
                 navigate('/dashboard');
             }
         } catch (err) {
-            setError(err);
+            const message = err.response?.data?.error || err.message || 'Something went wrong';
+            setError(message);
         } finally {
             setLoading(false);
         }

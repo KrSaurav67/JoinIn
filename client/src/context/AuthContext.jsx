@@ -16,25 +16,16 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
-        try {
-            const { data } = await api.post('/auth/login', { email, password });
-            setUser(data);
-            localStorage.setItem('userInfo', JSON.stringify(data));
-            localStorage.setItem('token', data.token);
-            return data;
-        } catch (error) {
-            if (error.response?.data?.needsVerification) throw error.response.data;
-            throw error.response?.data?.error || 'Login failed';
-        }
+        const { data } = await api.post('/auth/login', { email, password });
+        setUser(data);
+        localStorage.setItem('userInfo', JSON.stringify(data));
+        localStorage.setItem('token', data.token);
+        return data;
     };
 
     const register = async (name, email, password) => {
-        try {
-            const { data } = await api.post('/auth/register', { name, email, password });
-            return data; // Returns { message, email }
-        } catch (error) {
-            throw error.response?.data?.message || 'Registration failed';
-        }
+        const { data } = await api.post('/auth/register', { name, email, password });
+        return data; // { message, email }
     };
 
     const verifyOTP = async (email, otp) => {
